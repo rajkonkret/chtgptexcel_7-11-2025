@@ -1,0 +1,182 @@
+Option Explicit
+
+Public Sub CleanDatesToG()
+    Dim ws As Worksheet
+    Dim firstRow As Long, lastRow As Long
+    Dim srcCol As Long, dstCol As Long
+    Dim r As Long, v, d
+
+    Set ws = ActiveSheet            ' albo ThisWorkbook.Worksheets("Clean Data"), jeśli chcesz na sztywno
+    srcCol = 5                      ' E
+    dstCol = 7                      ' G
+    firstRow = 6
+
+    ' Ustal ostatni wiersz na podstawie kolumny E
+    lastRow = ws.Cells(ws.Rows.Count, srcCol).End(xlUp).Row
+    If lastRow < firstRow Then
+        MsgBox "Brak danych w kolumnie E od wiersza 6.", vbExclamation
+        Exit Sub
+    End If
+
+    ' Nagłówek i format docelowy
+    ws.Cells(firstRow - 1, dstCol).Value = "Data (dd/mmm/yyyy)"
+    ws.Columns(dstCol).NumberFormat = "dd/mmm/yyyy"
+
+    ' Pętla po wierszach: czytaj E, zapisuj do G
+    For r = firstRow To lastRow
+        v = ws.Cells(r, srcCol).Value
+        d = ParsePolishDate(v)
+        If IsDate(d) Then
+            ws.Cells(r, dstCol).Value = CDate(d)
+        Else
+            ws.Cells(r, dstCol).ClearContents   ' brak rozpoznania: zostaw pusto
+        End If
+    Next r
+
+    ws.Columns(dstCol).AutoFit
+    MsgBox "Gotowe. Oczyszczone daty w kolumnie G.", vbInformation
+End Sub
+
+Private Function ParsePolishDate(ByVal v As Variant) As Variant
+    ' Zwraca Date, jeśli się udało, albo Empty, jeśli nie.
+    Dim s As String
+    Dim parts() As String
+    Dim y As Long, m As Long, d As Long
+
+    If IsDate(v) Then
+        ParsePolishDate = CDate(v)
+        Exit Function
+    End If
+
+    s = Trim(CStr(v))
+    If Len(s) = 0 Then Exit Function
+
+    ' Uprość znaki: małe litery, zamień polskie znaki, ujednolić separatory
+    s = LCase$(s)
+    s = ReplacePolChars(s)
+    ' Miesiące tekstowe -> numery (01–12) z zachowaniem granic wyrazów
+    s = ReplaceMonthWordsWithMM(s)
+
+    ' Ujednolicenie separatorów na "/"
+    s = Replace(s, ".", "/")
+    s = Replace(s, "-", "/")
+    s = Replace(s, " ", "/")
+    Do While InStr(s, "//") > 0
+        s = Replace(s, "//", "/")
+    Loop
+    s = Trim$(s)
+    If Left$(s, 1) = "/" Then s = Mid$(s, 2)
+    If Right$(s, 1) = "/" Then s = Left$(s, Len(s) - 1)
+
+    ' Teraz mamy coś typu: dd/mm/rrrr, dd/mm/rr albo rrrr/mm/dd
+    parts = Split(s, "/")
+    If UBound(parts) <> 2 Then Exit Function
+
+    ' Usuń zera wiodące, ale zabezpiecz przed pustymi
+    If Len(parts(0)) = 0 Or Len(parts(1)) = 0 Or Len(parts(2)) = 0 Then Exit Function
+
+    ' Rozpoznaj kolejność
+    If Len(parts(0)) = 4 And IsNumeric(parts(0)) Then
+        ' rrrr/mm/dd
+        y = CLng(parts(0)): m = CLng(parts(1)): d = CLng(parts(2))
+    Else
+        ' dd/mm/rrrr lub dd/mm/rr
+        d = CLng(parts(0)): m = CLng(parts(1)): y = CLng(parts(2))
+        If y < 100 Then
+            If y < 30 Then
+                y = 2000 + y
+            Else
+                y = 1900 + y
+            End If
+        End If
+    End If
+
+    If Not IsValidYMD(y, m, d) Then Exit Function
+    On Error Resume Next
+    ParsePolishDate = DateSerial(y, m, d)
+    If Err.Number <> 0 Then
+        ParsePolishDate = Empty
+        Err.Clear
+    End If
+    On Error GoTo 0
+End Function
+
+Private Function ReplacePolChars(ByVal s As String) As String
+    ' Zastąp polskie znaki bezpłciowymi odpowiednikami,
+    ' bo ktoś zawsze wpisze "paź" jako "paź", "paz" albo "PAZ".
+    s = Replace(s, "ą", "a")
+    s = Replace(s, "ć", "c")
+    s = Replace(s, "ę", "e")
+    s = Replace(s, "ł", "l")
+    s = Replace(s, "ń", "n")
+    s = Replace(s, "ó", "o")
+    s = Replace(s, "ś", "s")
+    s = Replace(s, "ź", "z")
+    s = Replace(s, "ż", "z")
+    ReplacePolChars = s
+End Function
+
+Private Function ReplaceMonthWordsWithMM(ByVal s As String) As String
+    ' Zamień polskie nazwy/skrótowce miesięcy na numery "01"..."12".
+    ' Obsługuje skróty i pełne nazwy, z lub bez kropek.
+    Dim mons As Variant, i As Long
+    mons = Array( _
+        Array("sty", "styczen"), _
+        Array("lut", "luty"), _
+        Array("mar", "marzec"), _
+        Array("kwi", "kwiecien"), _
+        Array("maj", "maj"), _
+        Array("cze", "czerwiec"), _
+        Array("lip", "lipiec"), _
+        Array("sie", "sierpien"), _
+        Array("wrz", "wrzesien"), _
+        Array("paz", "pazdziernik"), _
+        Array("lis", "listopad"), _
+        Array("gru", "grudzien") _
+    )
+
+    ' Usuń kropki po skrótach (np. "kwi.")
+    s = Replace(s, "sty.", "sty")
+    s = Replace(s, "lut.", "lut")
+    s = Replace(s, "mar.", "mar")
+    s = Replace(s, "kwi.", "kwi")
+    s = Replace(s, "maj.", "maj")
+    s = Replace(s, "cze.", "cze")
+    s = Replace(s, "lip.", "lip")
+    s = Replace(s, "sie.", "sie")
+    s = Replace(s, "wrz.", "wrz")
+    s = Replace(s, "paz.", "paz")
+    s = Replace(s, "lis.", "lis")
+    s = Replace(s, "gru.", "gru")
+
+    ' Zamiany z zachowaniem granic tokenów
+    For i = 0 To 11
+        s = ReplaceWordToken(s, mons(i)(0), Format$(i + 1, "00"))
+        s = ReplaceWordToken(s, mons(i)(1), Format$(i + 1, "00"))
+    Next i
+
+    ReplaceMonthWordsWithMM = s
+End Function
+
+Private Function ReplaceWordToken(ByVal text As String, ByVal token As String, ByVal repl As String) As String
+    ' Prosta zamiana „całego słowa” bez referencji do RegExp.
+    ' Działa w najczęstszych układach: oddzielone spacją/kropką/myślnikiem/slashem/liczbą.
+    Dim t As String: t = " " & text & " "
+    t = Replace(t, " " & token & " ", " " & repl & " ")
+    t = Replace(t, "/" & token & "/", "/" & repl & "/")
+    t = Replace(t, "-" & token & "-", "-" & repl & "-")
+    t = Replace(t, "." & token & ".", "." & repl & ".")
+    t = Replace(t, " " & token & "/", " " & repl & "/")
+    t = Replace(t, "/" & token & " ", "/" & repl & " ")
+    t = Replace(t, " " & token & "-", " " & repl & "-")
+    t = Replace(t, "-" & token & " ", "-" & repl & " ")
+    t = Replace(t, "." & token & " ", "." & repl & " ")
+    t = Replace(t, " " & token & ".", " " & repl & ".")
+    ReplaceWordToken = Mid$(t, 2, Len(t) - 2)
+End Function
+
+Private Function IsValidYMD(ByVal y As Long, ByVal m As Long, ByVal d As Long) As Boolean
+    IsValidYMD = (y >= 1900 And y <= 9999 And m >= 1 And m <= 12 And d >= 1 And d <= 31)
+End Function
+
+
