@@ -1,0 +1,789 @@
+{
+    "name": "Integration Google Sheets",
+    "flow": [
+        {
+            "id": 5,
+            "module": "util:BasicTrigger",
+            "version": 1,
+            "parameters": {
+                "values": [
+                    {
+                        "spec": [
+                            {
+                                "name": "1",
+                                "value": "1"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "values": {
+                            "items": [
+                                {
+                                    "spec": {
+                                        "mode": "chose",
+                                        "items": [
+                                            null
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "values",
+                        "type": "array",
+                        "label": "Bundles",
+                        "required": true,
+                        "spec": [
+                            {
+                                "name": "spec",
+                                "label": "Items",
+                                "type": "array",
+                                "required": true,
+                                "spec": [
+                                    {
+                                        "name": "name",
+                                        "label": "Name",
+                                        "required": true,
+                                        "type": "text"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "label": "Value",
+                                        "required": true,
+                                        "type": "text"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "1",
+                        "label": "1",
+                        "type": "text"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1,
+            "module": "google-sheets:createSpreadsheet",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 10548755
+            },
+            "mapper": {
+                "properties": {
+                    "title": "test_excel_7_11",
+                    "defaultFormat": {}
+                },
+                "sheets": [
+                    {
+                        "properties": {
+                            "title": "dane"
+                        }
+                    }
+                ]
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My Google connection (rajkonkret660@gmail.com)",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "properties": {
+                            "nested": {
+                                "autoRecalc": {
+                                    "mode": "chose",
+                                    "label": "Empty"
+                                },
+                                "timeZone": {
+                                    "mode": "chose",
+                                    "label": "Empty"
+                                },
+                                "defaultFormat": {
+                                    "nested": {
+                                        "numberFormat": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "sheets": {
+                            "mode": "chose",
+                            "items": [
+                                null
+                            ]
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "properties",
+                        "type": "collection",
+                        "label": "Properties",
+                        "spec": [
+                            {
+                                "name": "title",
+                                "type": "text",
+                                "label": "Title",
+                                "required": true
+                            },
+                            {
+                                "name": "locale",
+                                "type": "text",
+                                "label": "Locale"
+                            },
+                            {
+                                "name": "autoRecalc",
+                                "type": "select",
+                                "label": "Recalculation interval",
+                                "validate": {
+                                    "enum": [
+                                        "ON_CHANGE",
+                                        "MINUTE",
+                                        "HOUR"
+                                    ]
+                                }
+                            },
+                            {
+                                "name": "timeZone",
+                                "type": "select",
+                                "label": "Time zone"
+                            },
+                            {
+                                "name": "defaultFormat",
+                                "type": "collection",
+                                "label": "Default format",
+                                "spec": [
+                                    {
+                                        "name": "numberFormat",
+                                        "type": "select",
+                                        "label": "Number format",
+                                        "validate": {
+                                            "enum": [
+                                                "TEXT",
+                                                "NUMBER",
+                                                "PERCENT",
+                                                "CURRENCY",
+                                                "DATE",
+                                                "TIME",
+                                                "DATE_TIME",
+                                                "SCIENTIFIC"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "sheets",
+                        "type": "array",
+                        "label": "Sheets",
+                        "spec": {
+                            "spec": [
+                                {
+                                    "name": "properties",
+                                    "spec": [
+                                        {
+                                            "name": "title",
+                                            "type": "text",
+                                            "label": "Title"
+                                        },
+                                        {
+                                            "name": "index",
+                                            "type": "number",
+                                            "label": "Index"
+                                        }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Properties"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Sheet",
+                            "name": "value"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": 2,
+            "module": "csv:ParseCSV",
+            "version": 1,
+            "parameters": {
+                "colCount": null,
+                "csvContainsHeaders": true,
+                "delimiterType": "other",
+                "relax": false,
+                "csvHeaders": "",
+                "delimiter": ","
+            },
+            "mapper": {
+                "csv": "data,produkt,ilosc,cena,klient\n2025-10-27,Buty,1,2150,Jan Kowalski\n2025-10-27,torba,1,250,RadekKowalski\n2025-10-27,laptop,1,150,Zenek Kowalski\n2025-10-27,zegarek,1,50,anna Kowalski"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 150
+                },
+                "restore": {
+                    "parameters": {
+                        "delimiterType": {
+                            "label": "Other"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "colCount",
+                        "type": "number",
+                        "label": "Number of columns"
+                    },
+                    {
+                        "name": "csvContainsHeaders",
+                        "type": "boolean",
+                        "label": "CSV contains headers",
+                        "required": true
+                    },
+                    {
+                        "name": "delimiterType",
+                        "type": "select",
+                        "label": "Delimiter",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                ",",
+                                "\t",
+                                "other"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "relax",
+                        "type": "boolean",
+                        "label": "Preserve quotes inside unquoted field",
+                        "required": true
+                    },
+                    {
+                        "name": "csvHeaders",
+                        "type": "text",
+                        "label": "CSV headers (recommended)"
+                    },
+                    {
+                        "name": "delimiter",
+                        "type": "text",
+                        "label": "Delimiter character",
+                        "validate": {
+                            "max": 1,
+                            "min": 1
+                        },
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "csv",
+                        "type": "text",
+                        "label": "CSV",
+                        "required": true
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "col1",
+                        "label": "data",
+                        "type": "text"
+                    },
+                    {
+                        "name": "col2",
+                        "label": "produkt",
+                        "type": "text"
+                    },
+                    {
+                        "name": "col3",
+                        "label": "ilosc",
+                        "type": "text"
+                    },
+                    {
+                        "name": "col4",
+                        "label": "cena",
+                        "type": "text"
+                    },
+                    {
+                        "name": "col5",
+                        "label": "klient",
+                        "type": "text"
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 3,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 2
+            },
+            "mapper": {
+                "col1": "{{2.col1}}",
+                "col2": "{{2.col2}}",
+                "col3": "{{2.col3}}",
+                "col4": "{{2.col4}}",
+                "col5": "{{2.col5}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 150
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "CSV - Parse CSV [2]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "builtin:BasicRouter",
+            "version": 1,
+            "mapper": null,
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 150
+                }
+            },
+            "routes": [
+                {
+                    "flow": [
+                        {
+                            "id": 4,
+                            "module": "google-sheets:updateMultipleRows",
+                            "version": 2,
+                            "parameters": {
+                                "__IMTCONN__": 10548755
+                            },
+                            "mapper": {
+                                "spreadsheetId": "{{1.spreadsheetId}}",
+                                "valueInputOption": "USER_ENTERED",
+                                "sheetId": "{{1.sheets[].properties.title}}",
+                                "range": "A:Z",
+                                "rows": "{{3.array}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 0
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "__IMTCONN__": {
+                                            "label": "My Google connection (rajkonkret660@gmail.com)",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "google"
+                                            }
+                                        }
+                                    },
+                                    "expect": {
+                                        "valueInputOption": {
+                                            "mode": "edit"
+                                        },
+                                        "sheetId": {
+                                            "mode": "edit"
+                                        },
+                                        "rows": {
+                                            "mode": "edit"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "__IMTCONN__",
+                                        "type": "account:google",
+                                        "label": "Connection",
+                                        "required": true
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "spreadsheetId",
+                                        "type": "text",
+                                        "label": "Spreadsheet ID",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "valueInputOption",
+                                        "type": "select",
+                                        "label": "Value input option"
+                                    },
+                                    {
+                                        "type": "hidden"
+                                    },
+                                    {
+                                        "name": "sheetId",
+                                        "type": "select",
+                                        "label": "Sheet Name",
+                                        "mode": "edit",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "range",
+                                        "type": "text",
+                                        "label": "Range",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "rows",
+                                        "type": "array",
+                                        "label": "Rows",
+                                        "mode": "edit",
+                                        "spec": {
+                                            "spec": [
+                                                {
+                                                    "name": "values",
+                                                    "spec": {
+                                                        "type": "text",
+                                                        "label": "Column"
+                                                    },
+                                                    "type": "array",
+                                                    "label": "Values",
+                                                    "labels": {
+                                                        "add": "Add value"
+                                                    }
+                                                }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Row",
+                                            "name": "value"
+                                        }
+                                    }
+                                ],
+                                "advanced": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "flow": [
+                        {
+                            "id": 7,
+                            "module": "email:ActionSendEmail",
+                            "version": 7,
+                            "parameters": {
+                                "account": 10936818,
+                                "saveAfterSent": false
+                            },
+                            "mapper": {
+                                "to": [
+                                    "rajkonkret660@gmail.com"
+                                ],
+                                "subject": "test make",
+                                "contentType": "html",
+                                "attachments": [],
+                                "cc": [],
+                                "bcc": [],
+                                "from": "",
+                                "sender": "",
+                                "replyTo": "",
+                                "inReplyTo": "",
+                                "references": [],
+                                "priority": "normal",
+                                "headers": [],
+                                "html": "test z make\ntu jest raport: {{1.spreadsheetUrl}}"
+                            },
+                            "metadata": {
+                                "designer": {
+                                    "x": 1500,
+                                    "y": 300
+                                },
+                                "restore": {
+                                    "parameters": {
+                                        "account": {
+                                            "label": "My Others (SMTP) connection (SMTP automat@rajkonkret.pl)",
+                                            "data": {
+                                                "scoped": "true",
+                                                "connection": "smtp"
+                                            }
+                                        },
+                                        "saveAfterSent": {
+                                            "label": "No"
+                                        }
+                                    },
+                                    "expect": {
+                                        "to": {
+                                            "mode": "chose",
+                                            "items": [
+                                                null
+                                            ]
+                                        },
+                                        "contentType": {
+                                            "label": "HTML"
+                                        },
+                                        "attachments": {
+                                            "mode": "chose"
+                                        },
+                                        "cc": {
+                                            "mode": "chose"
+                                        },
+                                        "bcc": {
+                                            "mode": "chose"
+                                        },
+                                        "references": {
+                                            "mode": "chose"
+                                        },
+                                        "priority": {
+                                            "label": "Normal"
+                                        }
+                                    }
+                                },
+                                "parameters": [
+                                    {
+                                        "name": "account",
+                                        "type": "account:smtp,google-restricted,microsoft-smtp-imap",
+                                        "label": "Connection",
+                                        "required": true
+                                    },
+                                    {
+                                        "name": "saveAfterSent",
+                                        "type": "select",
+                                        "label": "Save message after sending",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                true,
+                                                false
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "type": "hidden"
+                                    }
+                                ],
+                                "expect": [
+                                    {
+                                        "name": "to",
+                                        "type": "array",
+                                        "label": "To",
+                                        "required": true,
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address",
+                                            "required": true
+                                        }
+                                    },
+                                    {
+                                        "name": "subject",
+                                        "type": "text",
+                                        "label": "Subject"
+                                    },
+                                    {
+                                        "name": "contentType",
+                                        "type": "select",
+                                        "label": "Content Type",
+                                        "required": true,
+                                        "validate": {
+                                            "enum": [
+                                                "html",
+                                                "text"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "attachments",
+                                        "type": "array",
+                                        "label": "Attachments",
+                                        "spec": [
+                                            {
+                                                "name": "fileName",
+                                                "label": "File name",
+                                                "type": "filename",
+                                                "required": true,
+                                                "semantic": "file:name"
+                                            },
+                                            {
+                                                "name": "data",
+                                                "label": "Data",
+                                                "type": "buffer",
+                                                "required": true,
+                                                "semantic": "file:data"
+                                            },
+                                            {
+                                                "name": "cid",
+                                                "label": "Content-ID",
+                                                "type": "text"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "cc",
+                                        "type": "array",
+                                        "label": "Copy recipient",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        }
+                                    },
+                                    {
+                                        "name": "bcc",
+                                        "type": "array",
+                                        "label": "Blind copy recipient",
+                                        "spec": {
+                                            "name": "value",
+                                            "type": "email",
+                                            "label": "Email address"
+                                        }
+                                    },
+                                    {
+                                        "name": "from",
+                                        "type": "text",
+                                        "label": "From"
+                                    },
+                                    {
+                                        "name": "sender",
+                                        "type": "text",
+                                        "label": "Sender"
+                                    },
+                                    {
+                                        "name": "replyTo",
+                                        "type": "text",
+                                        "label": "Reply-To"
+                                    },
+                                    {
+                                        "name": "inReplyTo",
+                                        "type": "text",
+                                        "label": "In-Reply-To"
+                                    },
+                                    {
+                                        "name": "references",
+                                        "type": "array",
+                                        "label": "References",
+                                        "spec": {
+                                            "type": "text",
+                                            "label": "Reference",
+                                            "required": true,
+                                            "name": "value"
+                                        }
+                                    },
+                                    {
+                                        "name": "priority",
+                                        "type": "select",
+                                        "label": "Priority",
+                                        "validate": {
+                                            "enum": [
+                                                "high",
+                                                "normal",
+                                                "low"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "headers",
+                                        "type": "array",
+                                        "label": "Headers",
+                                        "spec": [
+                                            {
+                                                "name": "key",
+                                                "label": "Key",
+                                                "type": "text",
+                                                "required": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "label": "Value",
+                                                "type": "text",
+                                                "required": true
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "html",
+                                        "type": "text",
+                                        "label": "Content"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "metadata": {
+        "instant": false,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu2.make.com",
+        "notes": [
+            {
+                "moduleIds": [
+                    6
+                ],
+                "content": "<p>rozdziela na mail i arkusz</p><p></p>",
+                "isFilterNote": false,
+                "metadata": {
+                    "color": "#9138FE"
+                }
+            }
+        ]
+    }
+}
