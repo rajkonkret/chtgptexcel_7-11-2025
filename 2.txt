@@ -63,3 +63,11 @@ INDEKS($D$6:$D$100;
   ))
 )
 ------
+
+=INDEKS($D:$D;PODAJ.POZYCJĘ(MAKS(JEŻELI($E:$E="West";$G:$G));$G:$G;0))
+&" – "&
+INDEKS($D:$D;PODAJ.POZYCJĘ(MAKS(JEŻELI($E:$E="Northeast";$G:$G));$G:$G;0))
+&" – "&
+INDEKS($D:$D;PODAJ.POZYCJĘ(MAKS(JEŻELI($E:$E="South";$G:$G));$G:$G;0))
+
+-------
