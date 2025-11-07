@@ -1,0 +1,65 @@
+openapi: 3.1.0
+info:
+  title: NBP Web API
+  version: 1.0.0
+  description: Kursy walut i ceny złota z api.nbp.pl (publiczne, bez auth)
+servers:
+  - url: https://api.nbp.pl/api
+paths:
+  /exchangerates/tables/{table}/today/:
+    get:
+      operationId: getRatesTableToday
+      summary: Tabela kursów typu {table} opublikowana dziś
+      parameters:
+        - in: path
+          name: table
+          required: true
+          schema:
+            type: string
+            enum: [a, b, c]
+          description: Typ tabeli (A,B,C – małe litery w URL)
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, xml]
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Brak tabeli dla dzisiejszej daty
+  /exchangerates/rates/{table}/{code}/last/{topCount}/:
+    get:
+      operationId: getLastRates
+      summary: Ostatnie N notowań dla waluty {code} w tabeli {table}
+      parameters:
+        - in: path
+          name: table
+          required: true
+          schema: { type: string, enum: [a, b, c] }
+        - in: path
+          name: code
+          required: true
+          schema: { type: string }
+          description: Kod ISO 4217, np. usd, eur, chf
+        - in: path
+          name: topCount
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 255 }
+        - in: query
+          name: format
+          schema: { type: string, enum: [json, xml] }
+      responses:
+        "200": { description: OK }
+        "400": { description: Przekroczony limit lub zły parametr }
+  /cenyzlota/today:
+    get:
+      operationId: getGoldToday
+      summary: Dzisiejsza cena złota
+      parameters:
+        - in: query
+          name: format
+          schema: { type: string, enum: [json, xml] }
+      responses:
+        "200": { description: OK }
+        "404": { description: Brak danych dla dziś }
