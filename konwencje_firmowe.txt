@@ -1,0 +1,5 @@
+Konwencje nazw w firmie:
+- Nazwa głównego arkusza danych: Dane
+- Kolumny: Data, Produkt, Ilość, Cena jednostkowa, Wartość brutto
+- Pliki wynikowe nazywamy: Raport_<data>.xlsx lub .pdf
+- Wszystkie makra zapisujemy w module o nazwie: FirmoweMakra
