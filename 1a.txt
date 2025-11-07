@@ -2,3 +2,5 @@ https://chatgpt.com/canvas/shared/690dbd942da08191ba4bcb73fdbfff8d
 
 https://chatgpt.com/s/t_690dc514410c819192e2b52e71622d34
 https://chatgpt.com/share/e/690dc63a-91fc-8013-802e-d1defa2a29d8
+https://chatgpt.com/share/e/690dc63a-91fc-8013-802e-d1defa2a29d8
+w pliku excel mam dane sprzedazowe w kolumnie G, od wiersza 6, w kolumnie e mam różne regiony, w kolumnie D mam sprzedawców. podaj formule dla Excel 2016 pl aby wyswietlic najlepszego sprzedawce w regionie. jesli bedzie wiecej niż jeden wyswietl pozstałych. podawaj rozwiązanie krok po kroku. czekaj na potwierdzenie kroków.
