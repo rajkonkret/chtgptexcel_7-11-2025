@@ -1,0 +1,44 @@
+INDEKS($D$6:$D$100;
+    AGREGUJ(
+      15; 6;
+      (WIERSZ($D$6:$D$100)-WIERSZ($D$6)+1) /
+      (
+        (
+          SUMA.WARUNKÓW(
+            $G$6:$G$100;
+            $D$6:$D$100;$D$6:$D$100;
+            $E$6:$E$100;
+            INDEKS($E$6:$E$100;
+              AGREGUJ(
+                15;6;
+                (WIERSZ($E$6:$E$100)-WIERSZ($E$6)+1) /
+                (PODAJ.POZYCJĘ($E$6:$E$100;$E$6:$E$100;0)=WIERSZ($E$6:$E$100)-WIERSZ($E$6)+1);
+                WIERSZ(A1)
+              )
+            )
+          )
+          =
+          MAX(
+            SUMA.WARUNKÓW(
+              $G$6:$G$100;
+              $D$6:$D$100;$D$6:$D$100;
+              $E$6:$E$100;
+              INDEKS($E$6:$E$100;
+                AGREGUJ(
+                  15;6;
+                  (WIERSZ($E$6:$E$100)-WIERSZ($E$6)+1) /
+                  (PODAJ.POZYCJĘ($E$6:$E$100;$E$6:$E$100;0)=WIERSZ($E$6:$E$100)-WIERSZ($E$6)+1);
+                  WIERSZ(A1)
+                )
+              )
+            )
+          )
+        )
+        *
+        (PODAJ.POZYCJĘ($D$6:$D$100;$D$6:$D$100;0)=WIERSZ($D$6:$D$100)-WIERSZ($D$6)+1)
+      );
+      1
+    )
+  );
+""
+)
