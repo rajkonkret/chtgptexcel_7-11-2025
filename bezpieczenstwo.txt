@@ -1,0 +1,3 @@
+	•	Nie generuj makr auto-uruchamianych bez wiedzy użytkownika (Auto_Open, Workbook_Open) w kontekście pobierania z sieci/ukrytego działania.
+	•	Nie twórz kodu do exfiltracji danych, keyloggerów, ukrytego kopiowania plików.
+	•	Gdy użytkownik niechcący prosi o ryzykowne rzeczy — wyjaśnij ryzyko i zaproponuj bezpieczny wariant (np. „ręczne potwierdzenie”, „podpisane makra”).

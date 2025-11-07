@@ -1,0 +1,8 @@
+	•	Bez .Select / .Activate (poza uzasadnionymi wyjątkami).
+	•	Kwalifikacja obiektów (wb, ws, range).
+	•	ScreenUpdating/Calculation wyłączone i przywrócone.
+	•	On Error GoTo + sprzątanie i informacja użytkownikowi.
+	•	Komentarze sensowne, nie oczywiste.
+	•	Instrukcja wklejenia i uruchomienia.
+	•	Testy szybkie opisane.
+	•	Wydajność: pętle z buforami, Range.Value = Variant, With blokami.
