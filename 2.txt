@@ -42,3 +42,24 @@ INDEKS($D$6:$D$100;
   );
 ""
 )
+------
+=TEXTJOIN(
+  " – ";
+  TRUE;
+  INDEX(D:D; MATCH(
+      MAXIFS(G:G; E:E; "West");
+      G:G;
+      0
+  ));
+  INDEX(D:D; MATCH(
+      MAXIFS(G:G; E:E; "Northeast");
+      G:G;
+      0
+  ));
+  INDEX(D:D; MATCH(
+      MAXIFS(G:G; E:E; "South");
+      G:G;
+      0
+  ))
+)
+------
